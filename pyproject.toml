@@ -1,0 +1,26 @@
+[project]
+name = "study-agent-python"
+version = "0.1.0"
+description = "A personal Python study coach with tools, local progress, and an offline demo."
+readme = "README.md"
+requires-python = ">=3.12,<3.14"
+dependencies = [
+    "openai>=2.0,<3",
+    "pydantic>=2.0,<3",
+    "python-dotenv>=1.0,<2",
+    "rich>=13.0,<15",
+]
+
+[dependency-groups]
+dev = ["pytest>=8.0,<10", "ruff>=0.11,<1"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["."]
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I"]

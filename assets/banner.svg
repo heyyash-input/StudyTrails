@@ -1,0 +1,20 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360" role="img" aria-labelledby="title desc">
+  <title id="title">StudyTrail — Your next step starts with a question.</title>
+  <desc id="desc">StudyTrail, a personal AI study coach. Learn, practise, reflect. A teal learning-path logo sits beside white lettering on a navy background.</desc>
+  <rect width="1200" height="360" rx="24" fill="#101D35"/>
+  <rect x="0" y="0" width="9" height="360" fill="#48E0C2"/>
+  <g transform="translate(70 99)">
+    <rect width="146" height="146" rx="32" fill="#172A46"/>
+    <path d="M39 104V82Q39 73 50 73H96Q107 73 107 62V40" fill="none" stroke="#48E0C2" stroke-width="9" stroke-linecap="round"/>
+    <circle cx="39" cy="104" r="10" fill="#48E0C2"/>
+    <circle cx="73" cy="73" r="9" fill="#172A46" stroke="#48E0C2" stroke-width="5"/>
+    <circle cx="107" cy="40" r="10" fill="#F5C968"/>
+  </g>
+  <g font-family="Segoe UI, Arial, sans-serif">
+    <text x="257" y="107" fill="#48E0C2" font-size="16" font-weight="600" letter-spacing="3">YOUR PERSONAL AI STUDY COACH</text>
+    <text x="253" y="181" fill="#FFFFFF" font-size="68" font-weight="700" letter-spacing="-2">StudyTrail</text>
+    <text x="257" y="229" fill="#C5D2E4" font-size="25">Your next step starts with a question.</text>
+    <text x="257" y="282" fill="#48E0C2" font-size="16" font-weight="600" letter-spacing="2">LEARN  /  PRACTISE  /  REFLECT</text>
+    <text x="1125" y="317" text-anchor="end" fill="#889BB6" font-size="14">Built with Python. Powered by Groq.</text>
+  </g>
+</svg>
