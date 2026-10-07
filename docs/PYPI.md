@@ -5,9 +5,14 @@ Learn a little. Practise with purpose. See your progress.
 StudyTrail is a terminal AI study coach. Bring your own compatible provider API
 key, add study notes, practise with quizzes, and track progress locally.
 
-Requires Python 3.12 or 3.13. Once this release is published, install it in an
-activated environment with `pip install studytrails`, or install an isolated CLI
-with `uv tool install studytrails`. Run `studytrails` to open the welcome menu.
+Requires Python 3.12 or 3.13. Install the latest release in an activated
+environment with `python -m pip install --upgrade studytrails`, or install an
+isolated CLI with `uv tool install --upgrade studytrails`. Run `studytrails` to
+open the welcome menu.
+
+Created by Yash Patil, a Python and AI learner. The project uses OpenAI's Python
+SDK for compatible chat APIs. OpenAI created the GPT-OSS model family; the API host
+may be another provider, such as Groq. Users may configure other model families.
 
 ## Features
 

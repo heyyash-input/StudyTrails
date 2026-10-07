@@ -10,6 +10,11 @@ StudyTrail is a terminal study coach for Python, Java, and other subjects. Bring
 an API key from a compatible provider, add your notes, and practise with quizzes.
 Your progress stays on your computer. You do not need to run a server.
 
+StudyTrail was created by Yash Patil, a Python and AI learner. The project uses
+OpenAI's Python SDK for compatible chat APIs. OpenAI created the GPT-OSS model
+family; the API host may be another provider, such as Groq, and users can select
+other model families too.
+
 **Python 3.12 or 3.13 | Your choice of compatible AI provider | Local progress**
 
 ## Get started

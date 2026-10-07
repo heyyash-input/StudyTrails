@@ -4,7 +4,7 @@ build-backend = "hatchling.build"
 
 [project]
 name = "studytrails"
-version = "0.2.0"
+version = "0.2.1"
 description = "A personal multi-subject AI study coach with tools, local progress, and an offline demo."
 readme = "docs/PYPI.md"
 license = "MIT"
