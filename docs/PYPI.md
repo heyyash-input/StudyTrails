@@ -5,7 +5,7 @@ Learn a little. Practise with purpose. See your progress.
 StudyTrail is a terminal AI study coach. Bring your own compatible provider API
 key, add study notes, practise with quizzes, and track progress locally.
 
-Requires Python 3.12 or 3.13. Install the latest release in an activated
+Requires Python 3.10 through 3.14. Install the latest release in an activated
 environment with `python -m pip install --upgrade studytrails`, or install an
 isolated CLI with `uv tool install --upgrade studytrails`. Run `studytrails` to
 open the welcome menu.

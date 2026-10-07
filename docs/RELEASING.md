@@ -1,7 +1,7 @@
 # Releasing StudyTrail
 
 The distribution name is `studytrails`; the import remains `study_agent`.
-Version 0.2.0 is published on PyPI. Version 0.2.1 is the next local candidate.
+Versions 0.2.0 and 0.2.1 are published on PyPI. Version 0.2.2 is the next local candidate.
 Build, tests, and CI do not publish a release.
 
 ## Before each release

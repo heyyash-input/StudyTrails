@@ -15,7 +15,7 @@ OpenAI's Python SDK for compatible chat APIs. OpenAI created the GPT-OSS model
 family; the API host may be another provider, such as Groq, and users can select
 other model families too.
 
-**Python 3.12 or 3.13 | Your choice of compatible AI provider | Local progress**
+**Python 3.10–3.14 | Your choice of compatible AI provider | Local progress**
 
 ## Get started
 

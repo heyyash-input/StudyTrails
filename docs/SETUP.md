@@ -9,14 +9,17 @@ You can use the offline demo without an API key.
 
 ## 1. Install Python
 
-StudyTrail requires Python **3.12 or 3.13**.
+StudyTrail supports Python **3.10, 3.11, 3.12, 3.13, and 3.14**. Python 3.12 is
+shown in the commands below; replace `3.12` with your installed version when you
+want to use another supported release. The `openai` library used by StudyTrail
+requires Python 3.10 or newer.
 
 - **Windows:** Install Python from [python.org](https://www.python.org/downloads/).
   In the installer, enable **Add python.exe to PATH**. Then open a new PowerShell
   window and check `py --version`.
-- **macOS:** Install Python 3.12 or 3.13 from [python.org](https://www.python.org/downloads/)
+- **macOS:** Install Python 3.10–3.14 from [python.org](https://www.python.org/downloads/)
   or your preferred package manager. Check `python3.12 --version`.
-- **Linux:** Install Python 3.12 or 3.13 and its `venv` support using your
+- **Linux:** Install Python 3.10–3.14 and its `venv` support using your
   distribution's package manager. Check `python3.12 --version`.
 
 ## 2. Install StudyTrail in its own environment
@@ -63,8 +66,8 @@ python -m pip install studytrails
 studytrails
 ```
 
-If your system's `python3.12` command has another name, use the command that
-starts Python 3.12 or 3.13 to create the environment.
+If your system's `python3.12` command has another name, use the command for your
+chosen supported Python version to create the environment.
 
 ### Optional: install uv
 
@@ -167,7 +170,7 @@ synchronized.
 - **`studytrails` is not recognized / command not found:** activate the same
   virtual environment where you installed it. With uv, open a new terminal after
   `uv tool update-shell` and check uv's PATH instructions.
-- **Python version error:** install Python 3.12 or 3.13, then recreate the `.venv`
+- **Python version error:** use Python 3.10 through 3.14 and recreate the `.venv`
   with that version.
 - **PowerShell says scripts are disabled:** use the current-terminal command in
   the Windows section above, then activate again.

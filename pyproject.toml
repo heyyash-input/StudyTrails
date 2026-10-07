@@ -4,12 +4,12 @@ build-backend = "hatchling.build"
 
 [project]
 name = "studytrails"
-version = "0.2.1"
+version = "0.2.2"
 description = "A personal multi-subject AI study coach with tools, local progress, and an offline demo."
 readme = "docs/PYPI.md"
 license = "MIT"
 license-files = ["LICENSE"]
-requires-python = ">=3.12,<3.14"
+requires-python = ">=3.10,<3.15"
 dependencies = [
     "openai>=2.0,<3",
     "pydantic>=2.0,<3",

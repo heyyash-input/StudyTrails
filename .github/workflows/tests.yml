@@ -7,7 +7,7 @@ jobs:
     strategy:
       matrix:
         os: [windows-latest, ubuntu-latest]
-        python: ["3.12", "3.13"]
+        python: ["3.10", "3.11", "3.12", "3.13", "3.14"]
     runs-on: ${{ matrix.os }}
     steps:
       - uses: actions/checkout@v4
@@ -23,10 +23,11 @@ jobs:
       - name: Install and smoke-test wheel (Windows)
         if: runner.os == 'Windows'
         run: |
-          uv pip install --python .venv-wheel/Scripts/python.exe dist/studytrails-0.2.0-py3-none-any.whl
+          $wheel = (Get-ChildItem dist\*.whl | Select-Object -First 1).FullName
+          uv pip install --python .venv-wheel/Scripts/python.exe $wheel
           uv run --no-project --no-sync --python .venv-wheel/Scripts/python.exe python tests/wheel_smoke.py
       - name: Install and smoke-test wheel (Linux)
         if: runner.os != 'Windows'
         run: |
-          uv pip install --python .venv-wheel/bin/python dist/studytrails-0.2.0-py3-none-any.whl
+          uv pip install --python .venv-wheel/bin/python dist/*.whl
           uv run --no-project --no-sync --python .venv-wheel/bin/python python tests/wheel_smoke.py
