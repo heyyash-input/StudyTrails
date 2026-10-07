@@ -9,18 +9,21 @@ from pathlib import Path
 from uuid import uuid4
 
 from openai import OpenAI
+from rich.text import Text
 
 from .config import Settings
 from .preferences import PRESETS, save_settings, validate_base_url
+from .providers import chat_options
+from .ui import confirm
 
 
 def configure(console, root: Path) -> Settings:
     console.print("\nConfigure StudyTrail | bring your own API")
-    console.print("1. OpenAI-compatible custom endpoint  2. OpenAI  3. Groq")
-    selection = console.input("Provider [1]: ").strip() or "1"
-    providers = {"1": "custom", "2": "openai", "3": "groq"}
+    console.print("1. OpenAI-compatible custom endpoint\n2. OpenAI\n3. Groq\n4. DeepSeek")
+    selection = console.input(Text("Provider [1]: ")).strip() or "1"
+    providers = {"1": "custom", "2": "openai", "3": "groq", "4": "deepseek"}
     if selection not in providers:
-        raise ValueError("Choose 1, 2, or 3.")
+        raise ValueError("Choose 1, 2, 3, or 4.")
     provider = providers[selection]
     base_url = PRESETS.get(provider)
     if base_url is None:
@@ -28,7 +31,12 @@ def configure(console, root: Path) -> Settings:
     base_url = validate_base_url(base_url)
     console.print(f"Your key and study requests will be sent to: {base_url}")
     console.print("Use a model supporting Chat Completions function/tool calling.")
-    model = console.input("Model ID from your provider: ").strip()
+    if provider == "deepseek":
+        console.print("DeepSeek API key: https://platform.deepseek.com/api_keys")
+        console.print("StudyTrail uses DeepSeek in non-thinking mode. API charges may apply.")
+        model = console.input(Text("Model ID [deepseek-flash]: ")).strip() or "deepseek-flash"
+    else:
+        model = console.input("Model ID from your provider: ").strip()
     env_key = os.getenv("STUDYTRAIL_API_KEY", "").strip()
     key = env_key
     if not key:
@@ -44,7 +52,7 @@ def configure(console, root: Path) -> Settings:
     settings = Settings(root=root, provider=provider, base_url=base_url, model=model, api_key=key)
     settings.require_api()
     console.print("An optional connection test uses API quota and may incur provider charges.")
-    if console.input("Test tool calling now? [y/N]: ").strip().lower() in {"y", "yes"}:
+    if confirm(console, "Test tool calling now?"):
         probe_provider(settings)
         console.print("Tool-calling test passed.")
     else:
@@ -76,8 +84,7 @@ def probe_provider(settings: Settings) -> None:
                 }
             ],
             tool_choice={"type": "function", "function": {"name": "connection_check"}},
-            parallel_tool_calls=False,
-            max_completion_tokens=2400,
+            **chat_options(settings.base_url),
         )
         if not result.choices or not any(
             call.function.name == "connection_check"

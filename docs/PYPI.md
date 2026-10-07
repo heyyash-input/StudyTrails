@@ -18,7 +18,9 @@ may be another provider, such as Groq. Users may configure other model families.
 
 - Interactive provider, model, and hidden API-key setup.
 - OpenAI-compatible Chat Completions endpoints with tool-calling models.
-- OpenAI and Groq address presets; custom compatible endpoints supported.
+- OpenAI, Groq, and DeepSeek presets; custom compatible endpoints supported.
+- Formatted coach answers with readable headings, lists, and code blocks.
+- Explicit y/n prompts with input validation and a safe default of no.
 - Multi-subject coaching and subject-specific note retrieval.
 - Paste notes or import UTF-8 `.md` and `.txt` files up to 200 KB.
 - Multiple-choice quizzes, explanations, and local SQLite progress.
@@ -37,6 +39,7 @@ studytrails scores
 studytrails pending
 studytrails demo
 studytrails doctor
+studytrails --version
 ```
 
 Run `studytrails doctor` to see the personal storage location. Existing source

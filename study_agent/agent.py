@@ -7,6 +7,7 @@ from openai import OpenAI
 from pydantic import ValidationError
 
 from .config import Settings
+from .providers import chat_options
 from .tools import StudyTools, tool_definitions
 
 INSTRUCTIONS = """You are a practical personal multi-subject study coach for a beginner.
@@ -17,6 +18,9 @@ OpenAI model such as GPT-OSS, and name the configured provider as its API host w
 appropriate. Do not claim OpenAI created StudyTrail or guess other personal details
 about Yash Patil.
 Use plain English. Help the learner understand, practise, and improve.
+Format replies with short paragraphs and brief Markdown headings when helpful.
+Use bullets for steps and fenced code blocks with a language name for code examples.
+Avoid wide tables, excessive headings, and long walls of text. Keep note citations intact.
 For practice recommendations, inspect get_scores first. Search local notes for the
 chosen topic before teaching or creating a quiz. Use recent attempts as well as totals.
 If no scores exist, say so and start at beginner level. Respect the learner's chosen topic.
@@ -84,8 +88,7 @@ class StudyAgent:
                 model=self.settings.model,
                 messages=[{"role": "system", "content": self.instructions}, *messages],
                 tools=tool_definitions(),
-                parallel_tool_calls=False,
-                max_completion_tokens=2400,
+                **chat_options(self.settings.base_url),
             )
             choice = response.choices[0]
             if choice.finish_reason not in {"stop", "tool_calls"}:

@@ -1,7 +1,8 @@
 # Releasing StudyTrail
 
 The distribution name is `studytrails`; the import remains `study_agent`.
-Versions 0.2.0 and 0.2.1 are published on PyPI. Version 0.2.2 is the next local candidate.
+Version 0.2.2 is published on PyPI. Version 0.2.3 is the next local candidate,
+adding a DeepSeek preset, formatted coach replies, visible y/n prompts, and `--version`.
 Build, tests, and CI do not publish a release.
 
 ## Before each release
@@ -52,7 +53,7 @@ blindly combining indexes for production installs.
 For a manual release, first review the files listed under `dist/`, then publish:
 
 ```powershell
-uv publish
+uv publish dist/studytrails-0.2.3-py3-none-any.whl dist/studytrails-0.2.3.tar.gz
 ```
 
 Supply authentication securely as documented by uv. This command publishes publicly;

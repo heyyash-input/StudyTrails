@@ -93,11 +93,20 @@ You will need:
 3. A model ID that your provider account can access and that supports
    OpenAI-compatible Chat Completions with tool calling.
 
-StudyTrail offers address presets for OpenAI and Groq. A preset only fills in the
-provider address; it does not provide a key or guarantee every model will work.
+StudyTrail offers presets for OpenAI, Groq, and DeepSeek. These fill in the
+provider address; they do not provide a key or guarantee every model will work.
 For another compatible service, choose the custom endpoint option and enter its
 API base URL and model ID. StudyTrail cannot use provider APIs with an incompatible
 request format in this release.
+
+For DeepSeek: choose provider **4**, press Enter at the model prompt to accept
+`deepseek-flash`, and paste your own key from
+[DeepSeek API keys](https://platform.deepseek.com/api_keys). You may enter another
+current tool-calling model ID from your account. StudyTrail uses non-thinking mode
+for DeepSeek. Its API may require paid credit; check your provider account.
+
+At every `[y/n]` prompt, type `y` for yes or `n` for no. Pressing Enter selects no.
+You can also type `yes` or `no`; other answers prompt you to try again.
 
 The key prompt is hidden while you type. Paste the key only into that prompt. Do
 not paste it into the provider number or model prompt, a command line, this guide,
@@ -153,6 +162,9 @@ The macOS/Linux activation command is `source .venv/bin/activate`. If you used
 `uv tool install`, simply open a new terminal and type `studytrails`.
 
 ## 6. Find your notes and progress
+
+Check the installed release with `studytrails --version`. This command is available
+from version 0.2.3 onward and does not require an API key.
 
 Run this command from an activated environment or uv tool installation:
 

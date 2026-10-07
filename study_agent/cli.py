@@ -2,6 +2,7 @@
 
 import argparse
 import sqlite3
+from importlib.metadata import version
 
 from openai import APIConnectionError, APIError, APIStatusError, AuthenticationError, RateLimitError
 from rich.console import Console
@@ -14,12 +15,18 @@ from .onboarding import configure, ensure_notes, manage_notes, subject_slug
 from .preferences import data_root
 from .storage import Store
 from .tools import StudyTools
+from .ui import confirm, show_answer
 
 console = Console(markup=False, highlight=False)
 
 
 def trace(name: str) -> None:
-    console.print(f"  Tool: {name}", style="dim")
+    labels = {
+        "get_scores": "Checking your progress...",
+        "search_notes": "Searching your notes...",
+        "create_quiz": "Preparing your quiz...",
+    }
+    console.print(f"  {labels.get(name, name)}", style="dim")
 
 
 def show_scores(store: Store) -> None:
@@ -78,7 +85,7 @@ def offer_quizzes(tools: StudyTools) -> None:
         if tools.store.is_completed(quiz_id):
             continue
         console.print(f"Quiz ready: {quiz_id}")
-        if console.input("Take it now? [y/N]: ").strip().lower() in {"y", "yes"}:
+        if confirm(console, "Take it now?"):
             take_quiz(tools.store, quiz_id)
         else:
             console.print(f"Saved for later: studytrails quiz {quiz_id}")
@@ -134,7 +141,7 @@ def chat(settings: Settings, tools: StudyTools) -> None:
         try:
             with console.status("Coach is working..."):
                 answer = agent.run(goal)
-            console.print(f"\nCoach: {answer}")
+            show_answer(console, answer)
             offer_quizzes(tools)
         except (ValueError, RuntimeError, APIError) as exc:
             console.print(f"Error: {describe_error(exc)}", style="red")
@@ -156,6 +163,12 @@ def show_pending(store: Store) -> None:
 def build_parser() -> argparse.ArgumentParser:
     parser = argparse.ArgumentParser(
         description="StudyTrail: your personal multi-subject AI study coach."
+    )
+    parser.add_argument(
+        "--version",
+        action="version",
+        version=f"studytrails {version('studytrails')}",
+        help="Show the installed version and exit.",
     )
     commands = parser.add_subparsers(dest="command")
     commands.add_parser("demo", help="Try a fixed offline quiz; no API key or network required.")
@@ -188,7 +201,7 @@ def menu(settings: Settings) -> None:
     ensure_notes(settings.root)
     if not settings.api_key:
         console.print("No API key configured. Offline notes, scores, and demo remain available.")
-        if console.input("Configure AI now? [y/N]: ").strip().lower() in {"y", "yes"}:
+        if confirm(console, "Configure AI now?"):
             settings = configure(console, settings.root)
     while True:
         console.print("\n1. Start learning  2. Manage notes  3. View progress")
@@ -281,7 +294,7 @@ def main() -> int:
                 chat(settings, tools)
             case "ask":
                 answer = StudyAgent(settings, tools, trace).run(args.goal)
-                console.print(f"\nCoach: {answer}")
+                show_answer(console, answer)
                 offer_quizzes(tools)
             case "scores":
                 show_scores(store)

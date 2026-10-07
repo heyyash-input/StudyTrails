@@ -10,7 +10,11 @@ from keyring.errors import KeyringError
 from platformdirs import user_data_path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
-PRESETS = {"openai": "https://api.openai.com/v1", "groq": "https://api.groq.com/openai/v1"}
+PRESETS = {
+    "openai": "https://api.openai.com/v1",
+    "groq": "https://api.groq.com/openai/v1",
+    "deepseek": "https://api.deepseek.com",
+}
 
 
 def data_root() -> Path:

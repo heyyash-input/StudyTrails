@@ -2,6 +2,16 @@
 
 ## Setup and storage
 
+Provider 4 is DeepSeek (`https://api.deepseek.com`). Its suggested model is
+`deepseek-flash`; press Enter to accept it or enter a current model ID from your
+account. Both study requests and the optional connection test use non-thinking
+mode with DeepSeek. See [DeepSeek's tool-calling guide](https://api-docs.deepseek.com/guides/tool_calls/).
+An API key and any required account credit must be supplied by the user.
+
+All yes/no prompts display `[y/n] (Enter = no)`. They accept y/yes and n/no,
+case-insensitively, and reprompt for other input. Chat and `ask` render Markdown
+headings, lists, and code examples, retaining note citations.
+
 Run `studytrails` to open the menu, or `studytrails config` to configure AI directly.
 Choose a provider preset or enter an OpenAI-compatible Chat Completions base URL.
 Enter a model that supports function/tool calling and that your account can access.

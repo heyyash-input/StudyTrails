@@ -112,10 +112,17 @@ def test_chat_keeps_only_three_complete_turns(tools):
 
 @pytest.mark.parametrize(
     "base_url",
-    ["https://api.groq.com/openai/v1", "https://api.openai.com/v1", "https://custom.example/v1"],
+    [
+        "https://api.groq.com/openai/v1",
+        "https://api.openai.com/v1",
+        "https://custom.example/v1",
+        "https://api.deepseek.com",
+    ],
 )
 def test_actual_sdk_sends_tool_loop_to_configured_endpoint(tools, monkeypatch, base_url):
     requests = []
+    deepseek = base_url == "https://api.deepseek.com"
+    model = "deepseek-flash" if deepseek else "openai/gpt-oss-120b"
 
     def handler(request):
         assert str(request.url) == base_url + "/chat/completions"
@@ -132,7 +139,7 @@ def test_actual_sdk_sends_tool_loop_to_configured_endpoint(tools, monkeypatch, b
                 "id": f"chatcmpl_{len(requests)}",
                 "object": "chat.completion",
                 "created": 0,
-                "model": "openai/gpt-oss-120b",
+                "model": model,
                 "choices": [
                     {
                         "index": 0,
@@ -147,10 +154,21 @@ def test_actual_sdk_sends_tool_loop_to_configured_endpoint(tools, monkeypatch, b
         monkeypatch.setattr(
             "study_agent.agent.OpenAI", lambda **kwargs: OpenAI(http_client=http, **kwargs)
         )
-        agent = StudyAgent(Settings(api_key="test-not-a-real-key", base_url=base_url), tools)
+        agent = StudyAgent(
+            Settings(api_key="test-not-a-real-key", base_url=base_url, model=model), tools
+        )
         assert agent.run("Suggest practice") == "Start with loops."
-    assert requests[0]["model"] == "openai/gpt-oss-120b"
-    assert requests[0]["parallel_tool_calls"] is False
+    assert requests[0]["model"] == model
+    for request in requests:
+        if deepseek:
+            assert request["max_tokens"] == 2400
+            assert request["thinking"] == {"type": "disabled"}
+            assert "max_completion_tokens" not in request
+            assert "parallel_tool_calls" not in request
+        else:
+            assert request["parallel_tool_calls"] is False
+            assert request["max_completion_tokens"] == 2400
+            assert "thinking" not in request
     assert "input" not in requests[0]
     assert "store" not in requests[0]
     assert requests[0]["tools"][0]["function"]["name"] == "get_scores"

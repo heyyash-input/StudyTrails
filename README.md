@@ -53,7 +53,7 @@ the command so it can run from any directory without activating a virtual enviro
 Welcome to StudyTrail!
 Learn from your notes. Practise with quizzes. Track your progress.
 
-Configure AI now? [y/N]:
+Configure AI now? [y/n] (Enter = no):
 
 1. Start learning  2. Manage notes  3. View progress
 4. Configure AI  5. Pending quizzes  6. Offline demo  0. Exit
@@ -61,7 +61,7 @@ Configure AI now? [y/N]:
 
 Choose **Configure AI** to supply:
 
-1. An OpenAI-compatible custom endpoint, or the OpenAI/Groq address preset.
+1. An OpenAI-compatible custom endpoint, or the OpenAI/Groq/DeepSeek preset.
 2. The exact model ID from your provider. It must support Chat Completions tool calling.
 3. Your API key, entered with hidden input.
 
@@ -79,6 +79,15 @@ Keys are saved using a supported operating-system credential store. They are nev
 written to `config.json`. If your machine has no usable credential store, supply
 `STUDYTRAIL_API_KEY` through your environment and rerun setup. There is no plaintext
 fallback. Run `studytrails config` to change providers or models later.
+
+For DeepSeek, choose **4** and press Enter to use `deepseek-flash`, or enter a
+current model ID from your DeepSeek account. Paste your DeepSeek API key at the
+hidden prompt. StudyTrail uses non-thinking mode with DeepSeek. See the
+[DeepSeek API documentation](https://api-docs.deepseek.com/) for models and pricing.
+
+Yes/no prompts display `[y/n]`: enter `y` for yes, `n` for no, or press Enter for no.
+Coach replies render Markdown headings, lists, and code blocks in both chat and
+single-question mode.
 
 **Free app does not mean free API.** Offline features need no API calls. Live
 coaching uses your provider's free allowance or paid plan. StudyTrail cannot inspect
@@ -133,6 +142,7 @@ studytrails pending
 studytrails quiz QUIZ_ID
 studytrails demo
 studytrails doctor
+studytrails --version
 studytrails --help
 ```
 

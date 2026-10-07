@@ -4,6 +4,7 @@ import os
 import subprocess
 import sys
 import tempfile
+from importlib.metadata import version
 from pathlib import Path
 
 
@@ -34,6 +35,8 @@ def main():
             assert result.returncode == 0, result.stdout + result.stderr
             return result.stdout
 
+        assert run(["--version"]).strip() == f"studytrails {version('studytrails')}"
+        assert not (work / "personal").exists()
         assert "Welcome to StudyTrail" in run([], "n\n0\n")
         assert "API key: not configured" in run(["doctor"])
         assert "100.0%" in run(["demo"], "b\nc\nd\n")

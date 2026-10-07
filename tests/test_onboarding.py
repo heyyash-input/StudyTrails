@@ -131,10 +131,16 @@ def test_failed_probe_does_not_replace_config(tmp_path, monkeypatch, vault):
 
 
 @pytest.mark.parametrize("supported", [True, False])
-def test_connection_probe_checks_actual_tool_response(tmp_path, monkeypatch, supported):
+@pytest.mark.parametrize("base_url", ["https://provider.example/v1", "https://api.deepseek.com"])
+def test_connection_probe_checks_actual_tool_response(tmp_path, monkeypatch, supported, base_url):
     def handler(request):
-        assert str(request.url) == "https://provider.example/v1/chat/completions"
+        assert str(request.url) == base_url + "/chat/completions"
         payload = json.loads(request.content)
+        if base_url == "https://api.deepseek.com":
+            assert payload["thinking"] == {"type": "disabled"}
+            assert payload["max_tokens"] == 2400
+            assert "max_completion_tokens" not in payload
+            assert "parallel_tool_calls" not in payload
         assert payload["tool_choice"]["function"]["name"] == "connection_check"
         assert payload["model"] == "tool-model"
         message = {"role": "assistant", "content": "Hello"}
@@ -169,7 +175,7 @@ def test_connection_probe_checks_actual_tool_response(tmp_path, monkeypatch, sup
         )
         settings = Settings(
             root=tmp_path,
-            base_url="https://provider.example/v1",
+            base_url=base_url,
             model="tool-model",
             api_key="fake-key",
         )
@@ -269,3 +275,24 @@ def test_import_notes_and_reject_pdf(tmp_path, monkeypatch):
     answers = iter(["2", "java", "book", "book.pdf"])
     with pytest.raises(ValueError, match="UTF-8"):
         onboarding.manage_notes(console, tmp_path)
+
+
+def test_deepseek_setup_default_model_and_literal_prompts(tmp_path, monkeypatch, vault):
+    import sys
+
+    output = StringIO()
+    console = Console(file=output, width=100)
+    monkeypatch.setattr(sys, "stdin", StringIO("4\n\nmaybe\nn\n"))
+    monkeypatch.setattr(onboarding, "getpass", lambda *args: "deepseek-test-secret")
+    settings = onboarding.configure(console, tmp_path)
+    loaded = Settings.load()
+    assert loaded.provider == settings.provider == "deepseek"
+    assert loaded.base_url == "https://api.deepseek.com"
+    assert loaded.model == "deepseek-flash"
+    assert loaded.api_key == "deepseek-test-secret"
+    assert "deepseek-test-secret" not in output.getvalue()
+    assert "deepseek-test-secret" not in (tmp_path / "config.json").read_text()
+    assert "Provider [1]:" in output.getvalue()
+    assert "Model ID [deepseek-flash]:" in output.getvalue()
+    assert "[y/n] (Enter = no):" in output.getvalue()
+    assert "Please enter y for yes or n for no." in output.getvalue()
