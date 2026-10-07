@@ -14,30 +14,33 @@ Your progress stays on your computer. You do not need to run a server.
 
 ## Get started
 
-This version is prepared for packaging but **has not been published to PyPI**.
-Do not assume a package currently using the name `studytrails` is this project.
-
-From the source checkout:
+Install the published release in a virtual environment (recommended for people new
+to Python):
 
 ```powershell
-cd C:\CLAUDE_env\Study_Agent_python
-uv sync --locked
-uv run studytrails
+py -3.12 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install --upgrade pip
+python -m pip install studytrails
+studytrails
 ```
 
-If uv is not on your terminal PATH after installation, run the existing environment:
+On macOS/Linux, use these commands instead:
 
-```powershell
-& .\.venv\Scripts\studytrails.exe
+```bash
+python3.12 -m venv .venv
+source .venv/bin/activate
+python -m pip install --upgrade pip
+python -m pip install studytrails
+studytrails
 ```
 
-The original command also works: `python -m study_agent` in the activated environment.
-Keep development environments under `C:\CLAUDE_env`; do not install into system Python.
+After activating `.venv`, users can run `studytrails` whenever they open a new
+terminal for that environment. See the [downloadable setup guide](docs/SETUP.md)
+for uv installation, first-run configuration, and troubleshooting.
 
-After the maintainer publishes a verified release, users will be able to install it
-in an activated Python environment with `pip install studytrails`, or use
-`uv tool install studytrails` for an isolated command-line installation. They can
-then run `studytrails` from any directory.
+For a one-time isolated CLI installation, `uv tool install studytrails` installs
+the command so it can run from any directory without activating a virtual environment.
 
 ## First launch
 
