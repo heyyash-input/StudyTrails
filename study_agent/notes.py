@@ -4,16 +4,19 @@ import re
 from pathlib import Path
 
 
-def search_notes(directory: Path, query: str) -> list[dict]:
+def search_notes(directory: Path, query: str, subject: str | None = None) -> list[dict]:
     if not directory.is_dir():
         raise ValueError(f"Notes folder does not exist: {directory}")
     terms = set(re.findall(r"\w+", query.casefold()))
-    terms -= {"a", "an", "the", "in", "of", "to", "my", "me", "help", "with", "python"}
+    terms -= {"a", "an", "the", "in", "of", "to", "my", "me", "help", "with"}
     if not terms:
-        terms = {"python"}
+        return []
     results = []
     root = directory.resolve()
-    for path in sorted(directory.rglob("*")):
+    scopes = [directory / subject, directory / "personal" / subject] if subject else [directory]
+    if any(not scope.resolve().is_relative_to(root) for scope in scopes):
+        raise ValueError("Invalid subject folder.")
+    for path in sorted({p for scope in scopes for p in scope.rglob("*")}):
         if path.suffix.lower() not in {".md", ".txt"} or not path.is_file():
             continue
         # Notes may contain links, but retrieval is confined to the notes directory.

@@ -1,14 +1,22 @@
+[build-system]
+requires = ["hatchling>=1.26,<2"]
+build-backend = "hatchling.build"
+
 [project]
-name = "study-agent-python"
-version = "0.1.0"
-description = "A personal Python study coach with tools, local progress, and an offline demo."
-readme = "README.md"
+name = "studytrails"
+version = "0.2.0"
+description = "A personal multi-subject AI study coach with tools, local progress, and an offline demo."
+readme = "docs/PYPI.md"
+license = "MIT"
+license-files = ["LICENSE"]
 requires-python = ">=3.12,<3.14"
 dependencies = [
     "openai>=2.0,<3",
     "pydantic>=2.0,<3",
     "python-dotenv>=1.0,<2",
     "rich>=13.0,<15",
+    "keyring>=25,<26",
+    "platformdirs>=4,<5",
 ]
 
 [dependency-groups]
@@ -24,3 +32,12 @@ target-version = "py312"
 
 [tool.ruff.lint]
 select = ["E", "F", "I"]
+
+[project.scripts]
+studytrails = "study_agent.cli:main"
+
+[tool.hatch.build.targets.wheel]
+packages = ["study_agent"]
+
+[tool.hatch.build.targets.sdist]
+include = ["/study_agent", "/tests", "/docs", "/assets", "/README.md", "/LICENSE", "/CONTRIBUTING.md", "/pyproject.toml", "/uv.lock", "/.python-version"]

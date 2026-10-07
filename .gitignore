@@ -1,4 +1,5 @@
 .venv/
+.venv-*/
 .env
 .env.*
 !.env.example
@@ -15,3 +16,9 @@ dist/
 .uv-cache/
 .idea/
 .vscode/
+
+config.json
+config.tmp
+notes/personal/
+notes/python/
+notes/java/

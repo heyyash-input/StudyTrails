@@ -110,11 +110,16 @@ def test_chat_keeps_only_three_complete_turns(tools):
     assert prompts == ["Request 1", "Request 2", "Request 3", "Request 4"]
 
 
-def test_actual_sdk_sends_tool_loop_to_groq_with_mock_http_transport(tools, monkeypatch):
+@pytest.mark.parametrize(
+    "base_url",
+    ["https://api.groq.com/openai/v1", "https://api.openai.com/v1", "https://custom.example/v1"],
+)
+def test_actual_sdk_sends_tool_loop_to_configured_endpoint(tools, monkeypatch, base_url):
     requests = []
 
     def handler(request):
-        assert str(request.url) == "https://api.groq.com/openai/v1/chat/completions"
+        assert str(request.url) == base_url + "/chat/completions"
+        assert request.headers["authorization"] == "Bearer test-not-a-real-key"
         payload = json.loads(request.content)
         requests.append(payload)
         first = len(requests) == 1
@@ -142,7 +147,7 @@ def test_actual_sdk_sends_tool_loop_to_groq_with_mock_http_transport(tools, monk
         monkeypatch.setattr(
             "study_agent.agent.OpenAI", lambda **kwargs: OpenAI(http_client=http, **kwargs)
         )
-        agent = StudyAgent(Settings(api_key="test-not-a-real-key"), tools)
+        agent = StudyAgent(Settings(api_key="test-not-a-real-key", base_url=base_url), tools)
         assert agent.run("Suggest practice") == "Start with loops."
     assert requests[0]["model"] == "openai/gpt-oss-120b"
     assert requests[0]["parallel_tool_calls"] is False

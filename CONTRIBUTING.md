@@ -11,8 +11,8 @@ Small, focused improvements are welcome, including documentation-only changes.
 - Fix a proven issue and add a regression test when appropriate.
 - Discuss a larger feature before starting substantial implementation.
 
-Current areas to explore include multi-subject coaching, subject-specific progress,
-retrieval evaluation, and terminal usability. These are ideas, not implemented features.
+Current areas to explore include retrieval evaluation, more provider integrations,
+and terminal usability. Discuss changes before expanding the supported API formats.
 
 ## Set up locally
 
@@ -28,8 +28,8 @@ uv run python -m study_agent demo
 ```
 
 Use the project's `.venv`; do not install dependencies into system Python.
-The demo and automated tests do not need an API key. Live checks use your Groq
-account and its limits. Keep real keys only in the ignored `.env` file.
+The demo and automated tests do not need an API key. Live checks use your selected provider account and its limits. Keep real keys in
+the OS credential store or environment, never in test fixtures or committed files.
 
 ## Make a focused change
 
@@ -89,7 +89,7 @@ Be clear, constructive, and respectful. Prefer evidence over assumptions and sim
 code over unnecessary abstraction. Contributions are reviewed; submitting one does
 not guarantee it will be merged.
 
-The project does not yet include a selected LICENSE file. Maintainers should settle
-the licensing terms before describing the project as licensed open-source software.
+StudyTrail uses the MIT licence. Contributions are provided under the same terms;
+see [LICENSE](LICENSE).
 
 [Back to StudyTrail](README.md)

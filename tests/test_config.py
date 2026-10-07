@@ -20,6 +20,7 @@ def test_missing_groq_key_does_not_fall_back_to_openai(monkeypatch):
     monkeypatch.delenv("GROQ_MODEL", raising=False)
     monkeypatch.setenv("OPENAI_API_KEY", "test-other-provider-key")
     settings = config.Settings.load()
-    assert settings.model == "openai/gpt-oss-120b"
+    assert settings.provider == "not configured"
+    assert settings.model == ""
     with pytest.raises(ValueError, match="GROQ_API_KEY"):
         settings.require_api()

@@ -34,9 +34,10 @@ def tool_definitions() -> list[dict]:
 
 
 class StudyTools:
-    def __init__(self, store: Store, notes_directory: Path):
+    def __init__(self, store: Store, notes_directory: Path, subject: str | None = None):
         self.store = store
         self.notes_directory = notes_directory
+        self.subject = subject
         self.created_quizzes: list[str] = []
 
     def execute(self, name: str, arguments: str) -> dict:
@@ -46,9 +47,12 @@ class StudyTools:
         if name == "get_scores":
             return self.store.get_scores()
         if name == "search_notes":
-            return {"passages": search_notes(self.notes_directory, parsed.query)}
+            return {"passages": search_notes(self.notes_directory, parsed.query, self.subject)}
         if self.created_quizzes:
             raise ValueError("Only one quiz can be created per request. Finish this request now.")
+        if self.subject and not parsed.topic.casefold().startswith(self.subject + " "):
+            parsed = parsed.model_copy(update={"topic": f"{self.subject} {parsed.topic}"})
+            parsed = Quiz.model_validate(parsed.model_dump())
         quiz_id = self.store.create_quiz(parsed)
         self.created_quizzes.append(quiz_id)
         return {

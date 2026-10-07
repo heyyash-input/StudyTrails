@@ -1,283 +1,176 @@
 <p align="center">
-  <img src="assets/banner.svg" alt="StudyTrail — your personal AI study coach. Learn, practise, reflect." width="100%">
+  <img src="assets/banner.svg" alt="StudyTrail - your personal AI study coach" width="100%">
 </p>
 
 # StudyTrail
 
 **Learn a little. Practise with purpose. See your progress.**
 
-StudyTrail is a personal AI study coach that runs in your terminal. Ask a question,
-practise with a quiz, and get guidance informed by your saved results and study notes.
-It is also a small, readable Python project for learning how tool-using agents work.
+StudyTrail is a terminal study coach for Python, Java, and other subjects. Bring
+an API key from a compatible provider, add your notes, and practise with quizzes.
+Your progress stays on your computer. You do not need to run a server.
 
-**Python 3.12 · Groq · Local progress · Contributions welcome**
-
-[Get started](#get-started) · [Start studying](#start-studying) ·
-[Add notes](#bring-your-own-notes) · [Contribute](#contributions-welcome) ·
-[User guide](docs/USER_GUIDE.md)
-
-## What can I do with it?
-
-- **Learn:** ask for an explanation or a short study plan.
-- **Practise:** take multiple-choice quizzes and review answer explanations.
-- **Reflect:** ask the coach what to study next based on your saved scores.
-- **Use your notes:** search local Markdown and text files for relevant material.
-- **Explore agents:** see when the model calls tools and follow the Python code.
-
-The current coaching instructions, bundled notes, and offline demo focus on
-**Python**. You can try other subjects with an explicit request and your own notes,
-but consistent multi-subject coaching is still an improvement to contribute.
+**Python 3.12 or 3.13 | Your choice of compatible AI provider | Local progress**
 
 ## Get started
 
-The commands below use **Windows PowerShell**. Keep the project and its isolated
-Python environment under `C:\CLAUDE_env`.
+This version is prepared for packaging but **has not been published to PyPI**.
+Do not assume a package currently using the name `studytrails` is this project.
 
-### 1. Open the project and install dependencies
-
-Download or clone this repository into `C:\CLAUDE_env\Study_Agent_python`.
-If you already have the project there, simply open that folder.
-
-Install [uv](https://docs.astral.sh/uv/getting-started/installation/) if needed,
-then run:
+From the source checkout:
 
 ```powershell
 cd C:\CLAUDE_env\Study_Agent_python
 uv sync --locked
+uv run studytrails
 ```
 
-This creates a `.venv` and installs the project dependencies into it. No system
-Python packages need to be changed. No GPU is required.
-
-### 2. Try it without an API key
+If uv is not on your terminal PATH after installation, run the existing environment:
 
 ```powershell
-uv run python -m study_agent demo
+& .\.venv\Scripts\studytrails.exe
 ```
 
-The offline demo gives you three fixed questions about Python loops. It uses no
-API calls and keeps demo scores separate from your real study progress. It is a
-walkthrough of the local features, not a live AI conversation.
+The original command also works: `python -m study_agent` in the activated environment.
+Keep development environments under `C:\CLAUDE_env`; do not install into system Python.
 
-### 3. Connect Groq for live coaching
+After the maintainer publishes a verified release, users will be able to install it
+in an activated Python environment with `pip install studytrails`, or use
+`uv tool install studytrails` for an isolated command-line installation. They can
+then run `studytrails` from any directory.
 
-Create a key in [Groq Console](https://console.groq.com/keys). Stay on the **Free
-plan** to use its free allowance. Request and token limits apply; a paid account
-is not made free by this app. See [Groq's limits](https://console.groq.com/docs/rate-limits).
-
-Create your local settings file only if it does not already exist:
-
-```powershell
-if (-not (Test-Path .env)) { Copy-Item .env.example .env }
-notepad .env
-```
-
-Fill in your key locally and save:
-
-```dotenv
-GROQ_API_KEY=your-groq-api-key
-GROQ_MODEL=openai/gpt-oss-120b
-```
-
-The model runs on **Groq**. The `openai/` part identifies the model developer;
-you do not need an OpenAI API key or subscription.
-
-Keep credentials in `.env`, which Git ignores. Leave `.env.example` free of real keys.
-
-### 4. Start your study session
-
-```powershell
-uv run python -m study_agent doctor
-uv run python -m study_agent chat
-```
-
-`doctor` checks local configuration. It does not contact Groq or verify your key.
-The first chat request uses the live API.
-
-**Already installed, but `uv` is not recognised?** Use the existing environment:
-
-```powershell
-& .\.venv\Scripts\python.exe -m study_agent chat
-```
-
-If the environment is activated and your prompt shows `(.venv)`, this also works:
-
-```powershell
-python -m study_agent chat
-```
-
-Run these commands from the project folder. Start the app once, then type your
-requests at its `You:` prompt. Enter `/quit` and restart after changing `.env`.
-
-## Start studying
-
-At the `You:` prompt, try:
+## First launch
 
 ```text
-Help me practise Python loops with 2 beginner questions.
+Welcome to StudyTrail!
+Learn from your notes. Practise with quizzes. Track your progress.
+
+Configure AI now? [y/N]:
+
+1. Start learning  2. Manage notes  3. View progress
+4. Configure AI  5. Pending quizzes  6. Offline demo  0. Exit
 ```
 
-A typical session looks like this. Tool choices and wording can vary:
+Choose **Configure AI** to supply:
+
+1. An OpenAI-compatible custom endpoint, or the OpenAI/Groq address preset.
+2. The exact model ID from your provider. It must support Chat Completions tool calling.
+3. Your API key, entered with hidden input.
+
+The app displays the destination before you enter your key. An API key is not
+universal: it must match the endpoint and model. Native APIs with a different
+protocol are not supported by this release. A preset supplies an address; it is
+not a guarantee that every model at that provider is compatible.
+
+You can optionally test tool calling during setup. This makes a small API request
+and may consume paid quota. Skipping it saves unverified settings. Provider
+compatibility is covered with mocked HTTP tests; no live cross-provider certification
+is claimed.
+
+Keys are saved using a supported operating-system credential store. They are never
+written to `config.json`. If your machine has no usable credential store, supply
+`STUDYTRAIL_API_KEY` through your environment and rerun setup. There is no plaintext
+fallback. Run `studytrails config` to change providers or models later.
+
+**Free app does not mean free API.** Offline features need no API calls. Live
+coaching uses your provider's free allowance or paid plan. StudyTrail cannot inspect
+or enforce your billing tier. One study request may make several API calls.
+
+## Learn using your notes
+
+Choose **Manage notes**, then paste text or import a UTF-8 `.txt` or `.md` file.
+Give it a subject such as `java`, `python`, or `world-history`, and a short title.
+When pasting, enter `.done` on its own line to finish.
+
+Choose **Start learning** and enter the same subject. A blank subject searches all
+notes. Try:
 
 ```text
-You: Help me practise Python loops with 2 beginner questions.
-  Tool: get_scores
-  Tool: search_notes
-  Tool: create_quiz
-
-Coach: Your quiz is ready.
-Take it now? [y/N]: y
+Explain inheritance using my Java notes, then give me two beginner questions.
+Review my scores and suggest what to practise next.
 ```
 
-Choose **A, B, C, or D** for each question. After submission, the app saves your
-score and shows explanations. Enter **Q** during a quiz to leave without submitting;
-resuming starts that quiz again from question one.
+Notes are organised by subject. Search is restricted to the selected subject and
+returns passages with filename/line references. New quiz topics include that
+subject, so `java loops` and `python loops` have separate score labels. Historical
+quiz labels are retained unchanged; scores display all topics.
 
-Then try:
+No model training happens. This is keyword retrieval: good headings, concrete
+terms, and clear examples help. PDF, Word, images, and embeddings are not supported.
+Files above 200 KB are skipped. Matching passages are sent to the selected provider;
+only add material you are comfortable sharing with that provider. AI answers,
+answer keys, and citations still need your judgment.
 
-```text
-Review my scores and suggest what I should practise next.
-Explain break and continue using my notes.
-Create a short study plan for my weakest topic.
-```
+## Practise and track progress
 
-**Inside chat:** `/scores` shows progress, `/pending` lists unfinished quizzes,
-and `/quit` exits. Completed quiz results survive restarts; chat history does not.
+Choose A, B, C, or D during a quiz. StudyTrail grades and saves your submitted answers,
+then displays explanations. Enter Q to leave without submitting. Resuming starts
+from question one. A completed quiz cannot be submitted twice.
 
-### Useful terminal commands
+Inside chat, use `/scores`, `/pending`, or `/quit`. Chat history lasts for the current
+session; completed results survive restarts. The offline demo uses fixed Python
+questions and a separate database. It is not a local AI model.
 
-Run these at the PowerShell prompt, not at the agent's `You:` prompt:
+## Useful commands
 
 ```powershell
-uv run python -m study_agent scores
-uv run python -m study_agent pending
-uv run python -m study_agent quiz QUIZ_ID
-uv run python -m study_agent notes "loops range"
-uv run python -m study_agent --help
+studytrails
+studytrails config
+studytrails chat --subject java
+studytrails ask "Explain Java inheritance" --subject java
+studytrails notes-add
+studytrails notes "inheritance" --subject java
+studytrails scores
+studytrails pending
+studytrails quiz QUIZ_ID
+studytrails demo
+studytrails doctor
+studytrails --help
 ```
 
-Replace `QUIZ_ID` with an ID printed by the app. Add `--demo` to `scores`, `pending`,
-or `quiz QUIZ_ID` when working with demo results. A completed quiz can be submitted
-only once; request a new one to practise again.
+Add `--demo` to `scores`, `pending`, or `quiz QUIZ_ID` to use demo progress.
+`doctor` reports paths and settings without exposing the key or contacting the API.
+All commands also work after `uv run python -m study_agent` in the source checkout.
 
-## Bring your own notes
+## Where are my files?
 
-Put UTF-8 `.md` or `.txt` files in `notes/`. Use `notes/private/` for personal notes
-you do not want included in Git. New notes are read when you search; no indexing
-command is required.
+Installed releases use your operating system's personal application-data directory
+(for example `%LOCALAPPDATA%\StudyTrail` on Windows). Run `studytrails doctor` for
+the exact location. Within it:
 
-For example, create `notes/private/java-basics.md`:
+- `config.json`: provider address and model, without the API key.
+- `notes/personal/SUBJECT/`: imported or pasted notes with unique filenames.
+- `notes/python/` and `notes/java/`: bundled examples, copied only when missing.
+- `data/study.sqlite3`: real progress; `data/demo.sqlite3`: offline demonstration.
 
-```markdown
-# Java variables
+Existing source checkouts retain their original `data/` and `notes/` directories.
+Existing `.env` settings using `GROQ_API_KEY` and `GROQ_MODEL` work until you save a
+new provider configuration. Saved configuration takes precedence. No database
+migration or deletion is performed. `STUDYTRAIL_HOME` selects another storage root;
+copying existing data there is a deliberate manual step, not automatic merging.
 
-Java variables have declared types.
-int age = 25;
-double price = 19.99;
-boolean isLearning = true;
-String name = "Alex";
-```
+## How it works
 
-Then ask:
+The model can call three tools: `get_scores`, `search_notes`, and `create_quiz`.
+Pydantic validates tool arguments. SQLite stores quizzes and actual submitted
+answers. Python grades answers; the model cannot fabricate saved scores. Requests
+are bounded to six model rounds and ten tool calls. Tool order is suggested by the
+prompt, not enforced. The agent cannot execute generated code.
 
-```text
-Search my Java notes. Explain Java variables and create 2 beginner questions.
-Use "java variables" as the quiz topic.
-```
-
-Java is an exploratory use case: the current system instructions still favour
-Python. Use distinct topic names such as `java loops` and `python loops`.
-
-Search uses keywords rather than embeddings. PDF/image extraction is not supported,
-and files over 200 KB are skipped. See the [user guide](docs/USER_GUIDE.md) for details.
-
-## How the agent works
-
-The model chooses tools, receives their results, and decides what to do next.
-Your quiz answers are graded and saved by Python.
-
-```mermaid
-flowchart LR
-    A[Your request] --> B[Study coach]
-    B --> C[Read scores]
-    B --> D[Search notes]
-    B --> E[Create quiz]
-    C --> B
-    D --> B
-    E --> B
-    B --> F[Guidance and practice]
-    F --> G[You answer]
-    G --> H[Python grades and saves]
-```
-
-The three model-callable tools are `get_scores`, `search_notes`, and `create_quiz`.
-`save_result` is an application function: the model cannot submit an invented score.
-Model-generated questions and answer keys can still be wrong, so review explanations.
-
-## Explore the code
-
-```text
-study_agent/
-  cli.py        Terminal commands and quiz interaction
-  agent.py      Coaching instructions and the tool loop
-  tools.py      Allowed tools and argument validation
-  models.py     Quiz data models
-  notes.py      Keyword search over local notes
-  storage.py    SQLite persistence and grading
-  config.py     Local configuration
-  demo.py       Fixed offline demonstration
-notes/          Example learning material
-tests/          Offline automated tests
-assets/         StudyTrail logo and README banner
-docs/           Detailed user guide
-```
-
-The stack is Python, the OpenAI-compatible SDK pointed at Groq, Pydantic,
-python-dotenv, Rich, and SQLite. Tests use pytest; code checks use Ruff.
+The source is intentionally small: `agent.py` contains the tool loop, `tools.py`
+defines allowed actions, `notes.py` searches notes, `storage.py` stores results,
+`cli.py` runs the terminal interface, and `onboarding.py`/`preferences.py` handle
+setup and personal storage.
 
 ## Contributions welcome
 
-**You do not need to be an AI expert to contribute.** Documentation improvements,
-clearer examples, bug reports, and well-tested fixes are all useful.
+Bug reports, clearer documentation, sample notes, and focused improvements are
+welcome. Read [CONTRIBUTING.md](CONTRIBUTING.md). Please include steps to reproduce
+bugs and never share API keys, private notes, or your personal database.
 
-Good starting points:
+See the [user guide](docs/USER_GUIDE.md) for configuration and troubleshooting,
+and the [release guide](docs/RELEASING.md) for packaging and publishing.
 
-- Improve beginner explanations and sample notes.
-- Add tests for a reproducible bug or an edge case.
-- Improve accessibility and terminal usability.
-- Design explicit subject selection and separate subject progress.
-- Explore better retrieval with a small, measurable evaluation set.
+## Licence
 
-Read [CONTRIBUTING.md](CONTRIBUTING.md) for the development workflow, checks,
-and what to include in an issue or pull request. Larger changes should start with
-a discussion so contributors and maintainers agree on the intended behaviour.
-
-## Common questions
-
-**Is it free?** The offline demo and local commands require no API usage. Live
-coaching uses your Groq account's allowance. Stay on its Free plan for free usage
-within limits. The app cannot check your billing tier.
-
-**Where is my progress?** In `data/study.sqlite3`. Demo results use
-`data/demo.sqlite3`. Both are local and excluded from Git.
-
-**Why am I getting a 404?** Check that `GROQ_MODEL` names a model available to your
-Groq account. The configured default is `openai/gpt-oss-120b`. Restart after editing
-`.env`; an open chat does not reload settings.
-
-**What if I hit a rate limit?** Wait for the relevant Groq limit to reset. Each
-agent request can make several API calls. Offline features remain available.
-
-**What gets sent to Groq?** Your prompts, recent in-session messages, and tool
-results such as retrieved note passages and score summaries. Put only material
-you intend to send to that provider in your study notes.
-
-**Can I ask it to run my code?** No. This version does not execute generated code
-or provide arbitrary file-access tools.
-
-For configuration, troubleshooting, limits, and backup instructions, see the
-[full user guide](docs/USER_GUIDE.md).
-
----
-
-Built for curious learners. Improved by thoughtful contributions.
+MIT. See [LICENSE](LICENSE).

@@ -22,7 +22,7 @@ def test_missing_model_error_explains_how_to_fix_configuration():
         body={"code": "model_not_found", "message": "Model unavailable"},
     )
     message = cli.describe_error(error)
-    assert "GROQ_MODEL" in message
+    assert "studytrails config" in message
     assert "restart" in message
     assert "test-request-id" in message
 

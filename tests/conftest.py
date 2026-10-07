@@ -8,6 +8,19 @@ from study_agent.storage import Store
 from study_agent.tools import StudyTools
 
 
+@pytest.fixture(autouse=True)
+def isolated_user_configuration(monkeypatch, tmp_path):
+    monkeypatch.setenv("STUDYTRAIL_HOME", str(tmp_path / "profile"))
+    for name in (
+        "STUDYTRAIL_API_KEY",
+        "STUDYTRAIL_BASE_URL",
+        "STUDYTRAIL_MODEL",
+        "GROQ_API_KEY",
+        "GROQ_MODEL",
+    ):
+        monkeypatch.delenv(name, raising=False)
+
+
 @pytest.fixture
 def quiz():
     return Quiz.model_validate(deepcopy(DEMO_QUIZ))
