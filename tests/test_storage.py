@@ -3,6 +3,21 @@ import pytest
 from study_agent.storage import Store
 
 
+def test_timestamps_are_saved_in_utc(store, quiz):
+    quiz_id = store.create_quiz(quiz)
+    store.save_result(quiz_id, [1, 2, 3])
+    with store.connect() as db:
+        row = db.execute(
+            (
+                "SELECT q.created_at, a.completed_at FROM quizzes q "
+                "JOIN attempts a ON q.id = a.quiz_id WHERE q.id = ?"
+            ),
+            (quiz_id,),
+        ).fetchone()
+    assert row["created_at"].endswith("+00:00")
+    assert row["completed_at"].endswith("+00:00")
+
+
 def test_scores_survive_restart_and_exclude_pending_quizzes(store, quiz):
     quiz_id = store.create_quiz(quiz)
     store.create_quiz(quiz)

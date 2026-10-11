@@ -3,7 +3,7 @@
 import json
 import sqlite3
 from contextlib import contextmanager
-from datetime import UTC, datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from uuid import uuid4
 
@@ -46,7 +46,7 @@ class Store:
         with self.connect() as db:
             db.execute(
                 "INSERT INTO quizzes VALUES (?, ?, ?)",
-                (quiz_id, quiz.model_dump_json(), datetime.now(UTC).isoformat()),
+                (quiz_id, quiz.model_dump_json(), datetime.now(timezone.utc).isoformat()),
             )
         return quiz_id
 
@@ -84,7 +84,7 @@ class Store:
                         json.dumps(answers),
                         score,
                         len(answers),
-                        datetime.now(UTC).isoformat(),
+                        datetime.now(timezone.utc).isoformat(),
                     ),
                 )
         except sqlite3.IntegrityError as exc:
